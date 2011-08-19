@@ -16,7 +16,7 @@ import net.liftweb.squerylrecord.RecordTypeMode._
 import code.model.SquerylSchema
 
 /**
- * A class that's instantiated early and run.  It allows the application
+ * A class that's instantiated early and run. It allows the application
  * to modify lift's environment
  */
 class Boot {
@@ -62,7 +62,8 @@ class Boot {
 
     def sitemap = {
       val entries =
-        Menu("Home") / "index" :: Nil
+        Menu("Home") / "index" :: 
+        Trade.menus
 
       SiteMap(entries: _*)
     }

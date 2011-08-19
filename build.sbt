@@ -10,8 +10,6 @@ retrieveManaged := false
 
 logLevel := Level.Warn
 
-jettyScanDirs := Nil
-
 seq(webSettings :_*)
 
 libraryDependencies ++= {
