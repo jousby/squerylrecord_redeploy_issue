@@ -22,6 +22,7 @@ libraryDependencies ++= {
 
 libraryDependencies ++= Seq(
     "com.h2database" % "h2" % "1.2.138" withSources(),
+    "c3p0" % "c3p0" % "0.9.1.2" withSources(),
     "ch.qos.logback" % "logback-classic" % "0.9.26" withSources(),
     "org.mortbay.jetty" % "jetty" % "6.1.22" % "jetty,test" withSources(),
     "junit" % "junit" % "4.8.2" % "test->default" withSources(),

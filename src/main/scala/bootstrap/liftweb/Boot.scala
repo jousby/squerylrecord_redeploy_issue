@@ -14,6 +14,7 @@ import java.sql.DriverManager
 import code.model.Trade
 import net.liftweb.squerylrecord.RecordTypeMode._
 import code.model.SquerylSchema
+import com.mchange.v2.c3p0.ComboPooledDataSource
 
 /**
  * A class that's instantiated early and run. It allows the application
@@ -24,12 +25,14 @@ class Boot {
   def boot {
 
     // initialise database
-    SquerylRecord.initWithSquerylSession(Session.create(
-      DriverManager.getConnection(
-        Props.get("db.url") openOr "jdbc:h2:mem:potfolio-manager;DB_CLOSE_DELAY=-1",
-        Props.get("db.user") openOr "sa",
-        Props.get("db.password") openOr ""),
-      new H2Adapter))
+    val cpds = new ComboPooledDataSource 
+    cpds.setDriverClass(Props.get("db.driver") openOr "org.h2.Driver") 
+    cpds.setJdbcUrl(Props.get("db.url") openOr "jdbc:h2:tcp://localhost//usr/dev/data/portfolio-manager") 
+    cpds.setUser(Props.get("db.user") openOr "sa") 
+    cpds.setPassword(Props.get("db.password") openOr "")
+    
+    SquerylRecord.initWithSquerylSession(
+        Session.create(cpds.getConnection, new H2Adapter))
 
     // initialise schema
     transaction {
@@ -52,7 +55,7 @@ class Boot {
     })
         
     // configure lift rules   
-    LiftRules.unloadHooks.append(() => Session.currentSession.close) // this doesn't seem to help my issue
+    LiftRules.unloadHooks.append(() => cpds.close())
     LiftRules.addToPackages("code")
     LiftRules.setSiteMapFunc(() => sitemap)
     LiftRules.ajaxStart = Full(() => LiftRules.jsArtifacts.show("ajax-loader").cmd)
